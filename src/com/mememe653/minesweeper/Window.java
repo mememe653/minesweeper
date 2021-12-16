@@ -27,11 +27,11 @@ public class Window extends JPanel {
 	
 	private void initCells() {
 		// Place mines randomly
-		int mineRow[] = new int[HEIGHT / Cell.WIDTH];
-		int mineCol[] = new int[WIDTH / Cell.WIDTH];
+		int mineRow[] = new int[NUM_MINES];
+		int mineCol[] = new int[NUM_MINES];
 		
 		int i = 0;
-		while (i < mineRow.length) {
+		while (i < NUM_MINES) {
 			int candidateRow = (int) (Math.random() * HEIGHT / Cell.WIDTH);
 			int candidateCol = (int) (Math.random() * WIDTH / Cell.WIDTH);
 			

@@ -18,6 +18,7 @@ public class Cell extends JPanel {
 	private final int col;
 	private boolean uncovered = false;
 	private boolean flagged = false;
+	private boolean traversed = false;
 	private final boolean hasMine;
 	private int mineCount;
 	
@@ -73,6 +74,38 @@ public class Cell extends JPanel {
 		return hasMine;
 	}
 	
+	public int getMineCount() {
+		return mineCount;
+	}
+	
+	public boolean getTraversed() {
+		return traversed;
+	}
+	
+	public void setTraversed(boolean traversed) {
+		this.traversed = traversed;
+	}
+	
+	public void setUncovered(boolean uncovered) {
+		this.uncovered = uncovered;
+	}
+	
+	public void uncoverNeighbours() {
+		if (hasMine || mineCount > 0 || traversed) {
+			return;
+		}
+		
+		traversed = true;
+		uncovered = true;
+		repaint();
+		
+		for (Cell neighbour : neighbours) {
+			if (neighbour != null) {
+				neighbour.uncoverNeighbours();
+			}
+		}
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -101,6 +134,7 @@ public class Cell extends JPanel {
 			super.mouseClicked(e);
 			
 			if (SwingUtilities.isLeftMouseButton(e)) {
+				uncoverNeighbours();
 				uncovered = true;
 			} else if (SwingUtilities.isRightMouseButton(e)) {
 				flagged = !flagged;
