@@ -14,8 +14,6 @@ public class Cell extends JPanel {
 	
 	public static final int WIDTH = 20;
 	
-	private final int row;
-	private final int col;
 	private boolean uncovered = false;
 	private boolean flagged = false;
 	private boolean traversed = false;
@@ -40,9 +38,7 @@ public class Cell extends JPanel {
 	
 	private MouseListener mouseListener = new MouseListener();
 	
-	public Cell(int row, int col, boolean hasMine) {
-		this.row = row;
-		this.col = col;
+	public Cell(boolean hasMine) {
 		this.hasMine = hasMine;
 		
 		Image img = facingDownII.getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
@@ -72,22 +68,6 @@ public class Cell extends JPanel {
 	
 	public boolean hasMine() {
 		return hasMine;
-	}
-	
-	public int getMineCount() {
-		return mineCount;
-	}
-	
-	public boolean getTraversed() {
-		return traversed;
-	}
-	
-	public void setTraversed(boolean traversed) {
-		this.traversed = traversed;
-	}
-	
-	public void setUncovered(boolean uncovered) {
-		this.uncovered = uncovered;
 	}
 	
 	public void uncoverNeighbours() {

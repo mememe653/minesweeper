@@ -55,7 +55,7 @@ public class Window extends JPanel {
 						hasMine = true;
 					}
 				}
-				Cell cell = new Cell(j, i, hasMine);
+				Cell cell = new Cell(hasMine);
 				add(cell);
 				cells[j][i] = cell;
 			}
