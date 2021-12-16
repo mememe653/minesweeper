@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
 public class Cell extends JPanel {
@@ -16,6 +17,7 @@ public class Cell extends JPanel {
 	private final int row;
 	private final int col;
 	private boolean uncovered = false;
+	private boolean flagged = false;
 	private final boolean hasMine;
 	private int mineCount;
 	
@@ -82,6 +84,10 @@ public class Cell extends JPanel {
 			Image img = imageIcons.get(mineCount).getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
 			ImageIcon ii = new ImageIcon(img, imageIcons.get(mineCount).getDescription());
 			g.drawImage(ii.getImage(), 0, 0, this);
+		} else if (!uncovered && flagged) {
+			Image img = flaggedII.getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
+			ImageIcon ii = new ImageIcon(img, flaggedII.getDescription());
+			g.drawImage(ii.getImage(), 0, 0, this);
 		} else {
 			Image img = facingDownII.getImage();
 			g.drawImage(img, 0, 0, this);
@@ -94,7 +100,11 @@ public class Cell extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			super.mouseClicked(e);
 			
-			uncovered = true;
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				uncovered = true;
+			} else if (SwingUtilities.isRightMouseButton(e)) {
+				flagged = !flagged;
+			}
 			repaint();
 		}
 	}
