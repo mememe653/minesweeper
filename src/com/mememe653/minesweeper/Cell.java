@@ -17,6 +17,9 @@ public class Cell extends JPanel {
 	private final int col;
 	private boolean uncovered = false;
 	private final boolean hasMine;
+	private int mineCount;
+	
+	private Cell neighbours[] = new Cell[8];
 	
 	private List<ImageIcon> imageIcons = List.of(new ImageIcon("src/com/mememe653/resources/0.png"),
 												 new ImageIcon("src/com/mememe653/resources/1.png"),
@@ -50,6 +53,20 @@ public class Cell extends JPanel {
 		addMouseListener(mouseListener);
 	}
 	
+	public void setNeighbours(Cell neighbours[]) {
+		this.neighbours = neighbours;
+		updateMineCount();
+	}
+	
+	private void updateMineCount() {
+		mineCount = 0;
+		for (Cell neighbour : neighbours) {
+			if (neighbour != null && neighbour.hasMine()) {
+				mineCount++;
+			}
+		}
+	}
+	
 	public boolean hasMine() {
 		return hasMine;
 	}
@@ -62,8 +79,8 @@ public class Cell extends JPanel {
 			Image img = bombII.getImage();
 			g.drawImage(img, 0, 0, this);
 		} else if (uncovered && !hasMine) {
-			Image img = imageIcons.get(0).getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
-			ImageIcon ii = new ImageIcon(img, imageIcons.get(0).getDescription());
+			Image img = imageIcons.get(mineCount).getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
+			ImageIcon ii = new ImageIcon(img, imageIcons.get(mineCount).getDescription());
 			g.drawImage(ii.getImage(), 0, 0, this);
 		} else {
 			Image img = facingDownII.getImage();

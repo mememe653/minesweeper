@@ -13,6 +13,8 @@ public class Window extends JPanel {
 	
 	public static final int NUM_MINES = 50;
 	
+	private Cell cells[][] = new Cell[HEIGHT / Cell.WIDTH][WIDTH / Cell.WIDTH];
+	
 	public Window() {
 		initWindow();
 		initCells();
@@ -25,22 +27,22 @@ public class Window extends JPanel {
 	
 	private void initCells() {
 		// Place mines randomly
-		int row[] = new int[HEIGHT / Cell.WIDTH];
-		int col[] = new int[WIDTH / Cell.WIDTH];
+		int mineRow[] = new int[HEIGHT / Cell.WIDTH];
+		int mineCol[] = new int[WIDTH / Cell.WIDTH];
 		
 		int i = 0;
-		while (i < row.length) {
+		while (i < mineRow.length) {
 			int candidateRow = (int) (Math.random() * HEIGHT / Cell.WIDTH);
 			int candidateCol = (int) (Math.random() * WIDTH / Cell.WIDTH);
 			
-			for (int j = 0; j < row.length; j++) {
-				if (row[j] == candidateRow && col[j] == candidateCol) {
+			for (int j = 0; j < mineRow.length; j++) {
+				if (mineRow[j] == candidateRow && mineCol[j] == candidateCol) {
 					continue;
 				}
 			}
 			
-			row[i] = candidateRow;
-			col[i] = candidateCol;
+			mineRow[i] = candidateRow;
+			mineCol[i] = candidateCol;
 			i++;
 		}
 		
@@ -48,12 +50,63 @@ public class Window extends JPanel {
 		for (i = 0; i < WIDTH / Cell.WIDTH; i++) {
 			for (int j = 0; j < HEIGHT / Cell.WIDTH; j++) {
 				boolean hasMine = false;
-				for (int k = 0; k < row.length; k++) {
-					if (row[k] == j && col[k] == i) {
+				for (int k = 0; k < mineRow.length; k++) {
+					if (mineRow[k] == j && mineCol[k] == i) {
 						hasMine = true;
 					}
 				}
-				add(new Cell(j, i, hasMine));
+				Cell cell = new Cell(j, i, hasMine);
+				add(cell);
+				cells[j][i] = cell;
+			}
+		}
+		
+		// Set neighbours
+		for (i = 0; i < WIDTH / Cell.WIDTH; i++) {
+			for (int j = 0; j < HEIGHT / Cell.WIDTH; j++) {
+				Cell neighbours[] = new Cell[8];
+				int row = j - 1;
+				int col = i - 1;
+				if (row >= 0 && col >= 0) {
+					neighbours[0] = cells[row][col];
+				}
+				row = j - 1;
+				col = i;
+				if (row >= 0) {
+					neighbours[1] = cells[row][col];
+				}
+				row = j - 1;
+				col = i + 1;
+				if (row >= 0 && col < WIDTH / Cell.WIDTH) {
+					neighbours[2] = cells[row][col];
+				}
+				row = j;
+				col = i + 1;
+				if (col < WIDTH / Cell.WIDTH) {
+					neighbours[3] = cells[row][col];
+				}
+				row = j + 1;
+				col = i + 1;
+				if (row < HEIGHT / Cell.WIDTH && col < WIDTH / Cell.WIDTH) {
+					neighbours[4] = cells[row][col];
+				}
+				row = j + 1;
+				col = i;
+				if (row < HEIGHT / Cell.WIDTH) {
+					neighbours[5] = cells[row][col];
+				}
+				row = j + 1;
+				col = i - 1;
+				if (row < HEIGHT / Cell.WIDTH && col >= 0) {
+					neighbours[6] = cells[row][col];
+				}
+				row = j;
+				col = i - 1;
+				if (col >= 0) {
+					neighbours[7] = cells[row][col];
+				}
+				
+				cells[j][i].setNeighbours(neighbours);
 			}
 		}
 	}
