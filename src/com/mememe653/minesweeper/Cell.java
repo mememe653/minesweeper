@@ -3,6 +3,7 @@ package com.mememe653.minesweeper;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -15,32 +16,55 @@ public class Cell extends JPanel {
 	private final int row;
 	private final int col;
 	private boolean uncovered = false;
+	private final boolean hasMine;
 	
+	private List<ImageIcon> imageIcons = List.of(new ImageIcon("src/com/mememe653/resources/0.png"),
+												 new ImageIcon("src/com/mememe653/resources/1.png"),
+												 new ImageIcon("src/com/mememe653/resources/2.png"),
+												 new ImageIcon("src/com/mememe653/resources/3.png"),
+												 new ImageIcon("src/com/mememe653/resources/4.png"),
+												 new ImageIcon("src/com/mememe653/resources/5.png"),
+												 new ImageIcon("src/com/mememe653/resources/6.png"),
+												 new ImageIcon("src/com/mememe653/resources/7.png"),
+												 new ImageIcon("src/com/mememe653/resources/8.png"));
+	
+	private ImageIcon bombII = new ImageIcon("src/com/mememe653/resources/bomb.png");
 	private ImageIcon facingDownII = new ImageIcon("src/com/mememe653/resources/facingDown.png");
-	private ImageIcon uncoveredII = new ImageIcon("src/com/mememe653/resources/0.png");
+	private ImageIcon flaggedII = new ImageIcon("src/com/mememe653/resources/flagged.png");
 	
 	private MouseListener mouseListener = new MouseListener();
 	
-	public Cell(int row, int col) {
+	public Cell(int row, int col, boolean hasMine) {
 		this.row = row;
 		this.col = col;
+		this.hasMine = hasMine;
 		
 		Image img = facingDownII.getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
 		facingDownII = new ImageIcon(img, facingDownII.getDescription());
 		
-		img = uncoveredII.getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
-		uncoveredII = new ImageIcon(img, uncoveredII.getDescription());
+		if (hasMine) {
+			img = bombII.getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
+			bombII = new ImageIcon(img, bombII.getDescription());
+		}
 		
 		addMouseListener(mouseListener);
+	}
+	
+	public boolean hasMine() {
+		return hasMine;
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		if (uncovered) {
-			Image img = uncoveredII.getImage();
+		if (uncovered && hasMine) {
+			Image img = bombII.getImage();
 			g.drawImage(img, 0, 0, this);
+		} else if (uncovered && !hasMine) {
+			Image img = imageIcons.get(0).getImage().getScaledInstance(WIDTH, WIDTH, Image.SCALE_DEFAULT);
+			ImageIcon ii = new ImageIcon(img, imageIcons.get(0).getDescription());
+			g.drawImage(ii.getImage(), 0, 0, this);
 		} else {
 			Image img = facingDownII.getImage();
 			g.drawImage(img, 0, 0, this);
